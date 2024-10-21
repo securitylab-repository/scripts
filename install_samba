@@ -2,7 +2,7 @@
 
 USER=$1
 
-sudo apt -y install samba
+sudo apt -y install samba wget
 
 if [ -z $USER ] ; then
 
@@ -20,7 +20,7 @@ sudo chmod -R 777 /home/${USER}/data
 
 sudo mv /etc/samba/smb.conf /etc/samba/smb.conf.old
 
-sudo wget http://securitylab.fr/liveraizo-update/download/samba_template -O /tmp/smb.conf
+sudo wget https://raw.githubusercontent.com/securitylab-repository/scripts/refs/heads/main/download/samba_template -O /tmp/smb.conf
 
 
 sudo sed -i  "s/USER/${USER}/"  /tmp/smb.conf 
