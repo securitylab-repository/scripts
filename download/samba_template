@@ -1,0 +1,5 @@
+[guest_shared_directory]  
+
+path = /home/USER/data  
+browseable = yes  
+read only = no

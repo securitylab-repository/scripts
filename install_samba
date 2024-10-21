@@ -1,0 +1,35 @@
+#!/bin/bash
+
+USER=$1
+
+sudo apt -y install samba
+
+if [ -z $USER ] ; then
+
+	echo "You must specify the user name as argument"
+	exit 1
+fi
+
+if [ ! -d  /home/${USER}/data ] ; then
+
+	sudo mkdir /home/${USER}/data
+
+fi
+
+sudo chmod -R 777 /home/${USER}/data
+
+sudo mv /etc/samba/smb.conf /etc/samba/smb.conf.old
+
+sudo wget http://securitylab.fr/liveraizo-update/download/samba_template -O /tmp/smb.conf
+
+
+sudo sed -i  "s/USER/${USER}/"  /tmp/smb.conf 
+
+sudo cp /tmp/smb.conf  /etc/samba/smb.conf
+
+sudo smbpasswd -a ${USER}
+
+sudo systemctl restart smbd
+sudo systemctl restart nmbd
+
+exit 0
