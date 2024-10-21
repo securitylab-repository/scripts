@@ -20,7 +20,7 @@ sudo chmod -R 777 /home/${USER}/data
 
 sudo mv /etc/samba/smb.conf /etc/samba/smb.conf.old
 
-sudo wget https://raw.githubusercontent.com/securitylab-repository/scripts/refs/heads/main/download/samba_template -O /tmp/smb.conf
+sudo wget -q https://raw.githubusercontent.com/securitylab-repository/scripts/refs/heads/main/download/samba_template -O /tmp/smb.conf
 
 
 sudo sed -i  "s/USER/${USER}/"  /tmp/smb.conf 
@@ -29,6 +29,8 @@ sudo cp /tmp/smb.conf  /etc/samba/smb.conf
 
 sudo smbpasswd -a ${USER}
 
+sudo systemctl enable smbd
+sudo systemctl enable nmbd
 sudo systemctl restart smbd
 sudo systemctl restart nmbd
 
