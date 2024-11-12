@@ -12,3 +12,5 @@ fi
 wget https://github.com/securitylab-repository/scripts/raw/refs/heads/main/download/fichiers_cours_malwares.zip.xz -O /home/${USER}/malware_samples/fichiers_cours_malwares.zip.xz
 
 xz -d /home/${USER}/malware_samples/fichiers_cours_malwares.zip.xz
+
+unzip /home/${USER}/malware_samples/fichiers_cours_malwares.zip
