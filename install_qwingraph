@@ -1,0 +1,6 @@
+#!/bin/bash
+
+cd /tmp
+git clone https://github.com/WqyJh/qwingraph_qt5
+cd /tmp/qwingraph_qt5
+sudo ./install.sh
