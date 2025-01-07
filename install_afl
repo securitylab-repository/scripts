@@ -1,0 +1,10 @@
+#!/bin/bash
+
+sudo apt update
+sudo apt install build-essential clang gcc wget git
+git clone https://github.com/google/AFL.git
+cd AFL
+make
+sudo make install
+cd..
+rm -r AFL
