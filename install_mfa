@@ -9,12 +9,98 @@ if [ ! -d /home/${USER}/malware_samples ] ; then
 	mkdir /home/${USER}/malware_samples
 fi
 
-fast-update install_radare2
-fast-update install_oledump
-fast-update install_inetsim
+# fast-update install_radare2
+
+sudo rm -r /home/$USER/radare2
+
+git clone https://github.com/radare/radare2.git /home/$USER/radare2
+
+/home/$USER/radare2/sys/install.sh
+
+# fast-update install_oledump
+SCRIPT=/opt/securitylab/scripts
+
+if [ ! -e /opt/securitylab/scripts ] ;
+then
+	sudo mkdir -p $SCRIPT
+fi
+
+
+sudo wget https://raw.githubusercontent.com/DidierStevens/DidierStevensSuite/master/oledump.py -O ${SCRIPT}/oledump.py
+
+sudo sed -i -e 's/\#!\/usr\/bin\/env python/\#!\/usr\/bin\/python3/g' ${SCRIPT}/oledump.py
+
+sudo chmod +x ${SCRIPT}/oledump.py
+
+sudo rm /bin/oledump
+
+sudo ln -s ${SCRIPT}/oledump.py /bin/oledump
+
+pip3 install olefile
+
+#fast-update install_inetsim
+
+INETSIM="/home/debian/.inetsim_data"
+data="${INETSIM}/data"
+
+
+configure(){
+
+	PATH=/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin
+
+	mkdir -p ${data}	
+	cp /etc/inetsim/inetsim.conf ${INETSIM}
+	echo  "service_bind_address  0.0.0.0" >> ${INETSIM}/inetsim.conf
+	echo "https_bind_port  443" >> ${INETSIM}/inetsim.conf
+	echo "dns_default_ip    192.168.1.100" >> ${INETSIM}/inetsim.conf
+
+	sudo cp -r /var/lib/inetsim ${data}
+	sudo chmod -R 777 ${data}
+
+    	if ! grep -q '^inetsim:' /etc/group; then
+	      echo "Group 'inetsim' does not exist! Aborting."
+	      exit 1
+	fi
+
+	#if [ ! -f ${data}/inetsim/certs/default_key.pem ]; then
+		if sudo openssl version >/dev/null 2>&1; then
+			echo -n "Creating default SSL key and certificate... "
+			sudo openssl req -new -x509 -days 3650 -nodes -sha1 -keyout ${data}/inetsim/certs/default_key.pem -out ${data}/inetsim/certs/default_cert.pem -subj "/O=INetSim/OU=Development/CN=inetsim.org" 2>/dev/null && echo "done." || echo "failed."
+		else
+			echo "NOT creating default SSL key and certificate: OpenSSL not found."
+			echo "Check PATH in setup script if you have installed OpenSSL at an unusual location."
+		fi
+	#fi
+
+	echo -n "Setting file permissions... "
+	touch "${INETSIM}/log"
+	mkdir ${INETSIM}/report
+
+	sudo chgrp -R inetsim "${INETSIM}/log"
+	sudo chmod 770 "${INETSIM}/log"
+
+	sudo chgrp inetsim ${INETSIM}/report
+	sudo chmod 770 ${INETSIM}/report
+
+	sudo chgrp -R inetsim ${data}
+	sudo chmod g+w ${data}/inetsim/http/postdata/
+	sudo chmod g+w ${data}/inetsim/ftp/upload/
+	sudo chmod g+w ${data}/inetsim/tftp/upload/
+
+	echo "done."
+
+}
+
+
+sudo echo "deb http://www.inetsim.org/debian/ binary/" > /etc/apt/sources.list.d/inetsim.list
+sudo wget -O - https://www.inetsim.org/inetsim-archive-signing-key.asc | apt-key add -
+sudo apt -y update
+sudo apt -y install inetsim
+configure
 
 sudo apt -y update
 sudo apt -y install upx-ucl yara
 sudo pip3 install yara-python
+sudo apt -y install ssdeep
 
 git clone https://github.com/ytisf/theZoo.git /home/${USER}/malware_samples/thezoo
