@@ -1,5 +1,14 @@
 #!/bin/bash
 
+USER=$1
+USER=${USER:-debian}
+
+
+if [ ! -d /home/${USER}/malware_samples ] ; then
+
+	mkdir /home/${USER}/malware_samples
+fi
+
 fast-update install_radare2
 fast-update install_oledump
 fast-update install_inetsim
@@ -8,4 +17,4 @@ sudo apt -y update
 sudo apt -y install upx-ucl yara
 sudo pip3 install yara-python
 
-git clone https://github.com/ytisf/theZoo.git /home/debian/malware_samples/thezoo
+git clone https://github.com/ytisf/theZoo.git /home/${USER}/malware_samples/thezoo
