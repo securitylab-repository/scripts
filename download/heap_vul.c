@@ -35,5 +35,3 @@ int main(int argc, char **argv) {
 
     f->fp();  // Calls function pointer
 }
-
-0x80484b6
