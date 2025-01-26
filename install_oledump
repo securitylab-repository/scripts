@@ -1,1 +1,23 @@
+#!/bin/bash
 
+SCRIPT=/opt/securitylab/scripts
+
+if [ ! -e /opt/securitylab/scripts ] ;
+then
+	sudo mkdir -p $SCRIPT
+fi
+
+
+sudo wget https://raw.githubusercontent.com/DidierStevens/DidierStevensSuite/master/oledump.py -O ${SCRIPT}/oledump.py
+
+sudo sed -i -e 's/\#!\/usr\/bin\/env python/\#!\/usr\/bin\/python3/g' ${SCRIPT}/oledump.py
+
+sudo chmod +x ${SCRIPT}/oledump.py
+
+sudo rm /bin/oledump
+
+sudo ln -s ${SCRIPT}/oledump.py /bin/oledump
+
+pip3 install olefile
+
+exit 0 
