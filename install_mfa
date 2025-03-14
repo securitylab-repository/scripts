@@ -11,7 +11,7 @@ fi
 
 # fast-update install_radare2
 
-sudo rm -r /home/$USER/radare2
+sudo rm -r /home/$USER/radare2 &> /dev/null
 
 git clone https://github.com/radare/radare2.git /home/$USER/radare2
 
